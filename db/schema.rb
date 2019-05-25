@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_28_205756) do
+ActiveRecord::Schema.define(version: 2019_05_25_201239) do
 
   create_table "items", force: :cascade do |t|
     t.string "name"
@@ -353,6 +353,22 @@ ActiveRecord::Schema.define(version: 2019_04_28_205756) do
     t.integer "clues_all_rank"
     t.integer "clues_beginner_rank"
     t.float "combat_lvl"
+    t.integer "attack_f2p_rank"
+    t.integer "strength_f2p_rank"
+    t.integer "defence_f2p_rank"
+    t.integer "hitpoints_f2p_rank"
+    t.integer "ranged_f2p_rank"
+    t.integer "prayer_f2p_rank"
+    t.integer "magic_f2p_rank"
+    t.integer "cooking_f2p_rank"
+    t.integer "woodcutting_f2p_rank"
+    t.integer "fishing_f2p_rank"
+    t.integer "firemaking_f2p_rank"
+    t.integer "crafting_f2p_rank"
+    t.integer "smithing_f2p_rank"
+    t.integer "mining_f2p_rank"
+    t.integer "runecraft_f2p_rank"
+    t.integer "overall_f2p_rank"
   end
 
   create_table "users", force: :cascade do |t|
