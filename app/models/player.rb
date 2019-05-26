@@ -256,6 +256,9 @@ class Player < ActiveRecord::Base
     
     stats_hash["ttm_lvl"] = time_to_max(stats_hash, "lvl")
     stats_hash["ttm_xp"] = time_to_max(stats_hash, "xp")
+
+    calc_f2p_ranks(stats_hash)
+
     update_attributes(stats_hash)
     
     if stats_hash["overall_ehp"] > 250 or Player.supporters.include?(player_name)
@@ -298,6 +301,31 @@ class Player < ActiveRecord::Base
       ehp = self.read_attribute("#{skill}_ehp")
       update_attributes("#{skill}_xp_#{time}_start" => xp)
       update_attributes("#{skill}_ehp_#{time}_start" => ehp)
+    end
+  end
+
+  def calc_f2p_ranks(stats_hash)
+    SKILLS.each do |skill|
+      # Calculate new rank in skill
+      new_rank = Player.where("#{skill}_ehp > ?",  stats_hash["#{skill}_ehp"]).count
+      stats_hash["#{skill}_f2p_rank"] = new_rank
+
+      # Retrieve old rank in skill
+      old_rank = self.read_attribute("#{skill}_f2p_rank")
+
+      # Update ranks of other players if this player's rank changed
+      if new_rank != old_rank
+        # Decrement rank of all players between old and new rank
+        if old_rank
+          affected_players = Player.where("#{skill}_f2p_rank BETWEEN ? AND ?", old_rank + 1, new_rank)
+        else
+          # special case for newly added players who do not have an old rank
+          # update all players below new rank
+          affected_players = Player.where("#{skill}_f2p_rank >= ?", new_rank)
+        end
+
+        affected_players.update_all("#{skill}_f2p_rank = #{skill}_f2p_rank + 1")
+      end
     end
   end
   
